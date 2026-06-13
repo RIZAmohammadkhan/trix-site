@@ -337,3 +337,13 @@
                 }, 1500);
             });
         }
+
+window.focusTui = focusTui;
+window.blurTui = blurTui;
+window.playSelected = playSelected;
+window.togglePause = togglePause;
+window.nextTrack = nextTrack;
+window.prevTrack = prevTrack;
+window.applySimulatedSearch = applySimulatedSearch;
+window.switchTab = switchTab;
+window.copyCommand = copyCommand;
