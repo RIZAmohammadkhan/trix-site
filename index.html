@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trix Player // Terminal Audio</title>
+    <link rel="icon" type="image/png" href="/favicon.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@100;300;400;500;700&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="/src/style.css">
+</head>
+<body>
+
+    <div class="wrapper">
+        <header>
+            <div class="logo-text">TRIX</div>
+        </header>
+
+        <!-- Brief About Section -->
+        <section class="about-section">
+            <h1>A lightweight <span>terminal music player</span> built in Rust.</h1>
+            <p>Trix is an optimized, keyboard-driven playback interface for Linux. It directly interfaces with system configurations to manage track playback with near-zero latency.</p>
+        </section>
+
+        <!-- Operational Deck (TUI Simulator) -->
+        <section class="deck-section">
+            <div class="chassis-box">
+                <div class="chassis-header">
+                    <div class="chassis-details">RMK-01 // STATION: ONLINE</div>
+                </div>
+
+                <!-- Click-to-focus interface -->
+                <div class="tui-overlay" id="focusOverlay" onclick="focusTui()">
+                    <button class="tui-overlay-btn" type="button">FOCUS TUI</button>
+                    <p>Navigate library: Up/Down • Pause: Space • Help: h</p>
+                </div>
+
+                <!-- Simulation Viewport -->
+                <div class="tui-canvas" id="tuiCanvas" tabindex="0" onblur="blurTui()">
+                    
+                    <div class="tui-title-bar" id="tuiTitleLine">
+                        State: stopped • Volume: 80% [System (ALSA)]
+                    </div>
+
+                    <div class="tui-viewport">
+                        <!-- Library Column -->
+                        <div style="display: flex; flex-direction: column; gap: 8px; height: 100%;">
+                            <div class="tui-box" style="flex-grow: 1; height: calc(100% - 45px);">
+                                <div class="tui-box-label" style="color: var(--tui-yellow)">Library</div>
+                                <div class="tui-lib-wrapper" id="tuiLibrary"></div>
+                            </div>
+                            
+                            <div class="tui-box" id="tuiInputPanel" style="height: 38px; padding-top: 4px;">
+                                <div class="tui-box-label" id="tuiInputTitle" style="color: var(--tui-cyan)">Search</div>
+                                <div class="tui-input-box" id="tuiInputBox" style="font-size: 0.7rem; color: var(--text-dark);">Press S to search</div>
+                            </div>
+                        </div>
+
+                        <!-- Status Column -->
+                        <div style="display: flex; flex-direction: column; gap: 8px; height: 100%;">
+                            <div class="tui-box" style="height: 90px;">
+                                <div class="tui-box-label" style="color: var(--tui-blue)">Now</div>
+                                <div style="font-size: 0.7rem;">
+                                    <div><span style="color: var(--tui-purple); font-weight: bold;">Track:</span> <span id="tuiTrackTitle" style="color: var(--tui-yellow)">-</span></div>
+                                    <div><span style="color: var(--tui-purple); font-weight: bold;">Artist:</span> <span id="tuiTrackArtist">-</span></div>
+                                    <div><span style="color: var(--tui-purple); font-weight: bold;">Index:</span> <span id="tuiTrackIndex">0 / 0</span></div>
+                                </div>
+                            </div>
+
+                            <div class="tui-box" style="height: 55px;">
+                                <div class="tui-box-label" style="color: var(--tui-green)">Progress</div>
+                                <div class="tui-bar-element">
+                                    <div class="tui-bar-fill" id="tuiProgressFill"></div>
+                                    <div class="tui-bar-label" id="tuiProgressLabel">--:-- / --:--</div>
+                                </div>
+                            </div>
+
+                            <div class="tui-box" style="flex-grow: 1;">
+                                <div class="tui-box-label" style="color: var(--tui-purple)">Hints</div>
+                                <div id="tuiHintBox" style="font-size: 0.7rem;">
+                                    Press <span style="color: var(--tui-purple); font-weight: bold">h</span> for cheatsheet • <span style="color: var(--tui-purple); font-weight: bold">v</span> volume mode
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Simulator Cheatsheet Display -->
+                    <div class="tui-overlay-menu" id="tuiHelp">
+                        <div style="color: var(--tui-blue); font-weight: bold; border-bottom: 1px solid var(--border-dim); padding-bottom: 3px; margin-bottom: 6px;">
+                            Cheatsheet
+                        </div>
+                        <div class="tui-menu-grid">
+                            <span class="tui-menu-key">↑ / ↓</span><span>Select track</span>
+                            <span class="tui-menu-key">Enter</span><span>Play track</span>
+                            <span class="tui-menu-key">Space</span><span>Pause / Resume</span>
+                            <span class="tui-menu-key">S</span><span>Search library</span>
+                            <span class="tui-menu-key">v</span><span>Volume mode</span>
+                            <span class="tui-menu-key">l</span><span>Toggle loop</span>
+                            <span class="tui-menu-key">Esc</span><span>Close menu</span>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- Install Instructions Panel -->
+        <section class="deploy-section" id="deploy">
+            <div class="tabs-header">
+                <button class="tab-btn active" onclick="switchTab('curl', this)">CURL</button>
+                <button class="tab-btn" onclick="switchTab('arch', this)">ARCH (AUR)</button>
+                <button class="tab-btn" onclick="switchTab('deb', this)">DEBIAN</button>
+                <button class="tab-btn" onclick="switchTab('rpm', this)">RPM</button>
+            </div>
+
+            <div id="tab-curl" class="cmd-panel">
+                <code class="cmd-code">curl -fsSL https://raw.githubusercontent.com/RIZAmohammadkhan/TerminalMusicPlayer/main/install.sh | sh</code>
+                <button class="cmd-copy" onclick="copyCommand('curl -fsSL https://raw.githubusercontent.com/RIZAmohammadkhan/TerminalMusicPlayer/main/install.sh | sh', this)">Copy</button>
+            </div>
+            
+            <div id="tab-arch" class="cmd-panel" style="display: none;">
+                <code class="cmd-code">yay -S trix-player</code>
+                <button class="cmd-copy" onclick="copyCommand('yay -S trix-player', this)">Copy</button>
+            </div>
+
+            <div id="tab-deb" class="cmd-panel" style="display: none;">
+                <code class="cmd-code">sudo dpkg -i trix-player_*.deb</code>
+                <button class="cmd-copy" onclick="copyCommand('sudo dpkg -i trix-player_*.deb', this)">Copy</button>
+            </div>
+
+            <div id="tab-rpm" class="cmd-panel" style="display: none;">
+                <code class="cmd-code">sudo rpm -i trix-player-*.rpm</code>
+                <button class="cmd-copy" onclick="copyCommand('sudo rpm -i trix-player-*.rpm', this)">Copy</button>
+            </div>
+        </section>
+
+        <!-- Centered Footer with Flat/Solid Color Heart and Icon-Only Socials -->
+        <footer>
+            <div class="footer-flow">
+                <span class="signature">
+                    made with <svg class="minimal-heart" viewBox="0 0 24 24" width="12" height="12" style="vertical-align: middle; margin-top: -2px;"><path fill="currentColor" d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg> by rmk
+                </span>
+                <span class="footer-divider">|</span>
+                <div class="footer-socials">
+                    <a href="https://linkedin.com/in/rizamkhan" class="social-link" target="_blank" rel="noopener noreferrer" title="LinkedIn">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M19 3a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14m-.5 15.5v-5.3a3.26 3.26 0 0 0-3.26-3.26c-.85 0-1.84.52-2.32 1.3v-1.11h-2.8v8.37h2.8v-4.87c0-.25.05-.5.12-.69a.9.9 0 0 1 .82-.6c.5 0 .7.38.7.93v5.23h2.8M6.5 8.37a1.37 1.37 0 1 0 0-2.75 1.37 1.37 0 0 0 0 2.75M8 18.5V10.13H5V18.5h3z"/>
+                        </svg>
+                    </a>
+                    <a href="https://github.com/rizamohammadkhan" class="social-link" target="_blank" rel="noopener noreferrer" title="GitHub">
+                        <svg viewBox="0 0 24 24">
+                            <path d="M12 2A10 10 0 0 0 2 12c0 4.42 2.87 8.17 6.84 9.5.5.08.66-.23.66-.5v-1.69c-2.77.6-3.36-1.34-3.36-1.34-.46-1.16-1.11-1.47-1.11-1.47-.9-.62.07-.6.07-.6 1 .07 1.53 1.03 1.53 1.03.9 1.52 2.34 1.07 2.91.83.1-.65.35-1.09.63-1.34-2.22-.25-4.55-1.11-4.55-4.92 0-1.11.38-2 1.03-2.71-.1-.25-.45-1.29.1-2.64 0 0 .84-.27 2.75 1.02.79-.22 1.65-.33 2.5-.33.85 0 1.71.11 2.5.33 1.91-1.29 2.75-1.02 2.75-1.02.55 1.35.2 2.39.1 2.64.65.71 1.03 1.6 1.03 2.71 0 3.82-2.34 4.66-4.57 4.91.36.31.69.92.69 1.85V21c0 .27.16.59.67.5C19.14 20.16 22 16.42 22 12A10 10 0 0 0 12 2z"/>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Hidden Background Audio Node -->
+    <audio id="audioEngine" preload="auto"></audio>
+
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>

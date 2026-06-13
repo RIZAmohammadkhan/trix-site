@@ -1,0 +1,427 @@
+        :root {
+            --bg-void: #050608;
+            --bg-deck: #0a0b0e;
+            --bg-module: #111318;
+            
+            --border-dim: #181b24;
+            --border-bright: #292d3d;
+            
+            --tui-blue: #61afef;
+            --tui-cyan: #56b6c2;
+            --tui-green: #98c379;
+            --tui-yellow: #e5c07b;
+            --tui-purple: #c678dd;
+            
+            --text-raw: #7c849a;
+            --text-bright: #e2e8f0;
+            --text-dark: #414756;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-void);
+            color: var(--text-raw);
+            font-family: 'JetBrains Mono', monospace;
+            overflow-x: hidden;
+            padding-bottom: 40px;
+        }
+
+        .wrapper {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* --- Header --- */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 40px 0 20px 0;
+            margin-bottom: 40px;
+        }
+
+        .logo-text {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-bright);
+            letter-spacing: 2px;
+        }
+
+        /* --- About Section --- */
+        .about-section {
+            margin-bottom: 50px;
+        }
+
+        .about-section h1 {
+            font-size: 1.8rem;
+            color: var(--text-bright);
+            font-weight: 300;
+            line-height: 1.3;
+            margin-bottom: 15px;
+            letter-spacing: -0.5px;
+        }
+
+        .about-section h1 span {
+            font-weight: 700;
+            color: var(--tui-blue);
+        }
+
+        .about-section p {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--text-raw);
+        }
+
+        /* --- TUI Simulator Chassis --- */
+        .deck-section {
+            margin-bottom: 50px;
+        }
+
+        .chassis-box {
+            background-color: var(--bg-deck);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .chassis-header {
+            background-color: #08090c;
+            border-bottom: 1px solid var(--border-dim);
+            padding: 10px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .chassis-details {
+            font-size: 0.65rem;
+            color: var(--text-dark);
+            letter-spacing: 0.5px;
+        }
+
+        /* Overlay to prompt focus */
+        .tui-overlay {
+            position: absolute;
+            top: 37px;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(5, 6, 8, 0.95);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            cursor: pointer;
+            transition: opacity 0.2s ease;
+        }
+
+        .tui-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .tui-overlay-btn {
+            background: transparent;
+            border: 1px solid var(--border-bright);
+            color: var(--text-bright);
+            font-family: inherit;
+            padding: 10px 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            border-radius: 4px;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            transition: all 0.2s ease;
+        }
+
+        .tui-overlay-btn:hover {
+            border-color: var(--tui-blue);
+            color: var(--tui-blue);
+        }
+
+        .tui-overlay p {
+            font-size: 0.7rem;
+            color: var(--text-dark);
+        }
+
+        /* Simulated TUI */
+        .tui-canvas {
+            padding: 16px;
+            font-size: 0.75rem;
+            line-height: 1.4;
+            outline: none;
+            user-select: none;
+            position: relative;
+        }
+
+        .tui-title-bar {
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 6px 12px;
+            margin-bottom: 12px;
+            color: var(--tui-blue);
+            font-weight: bold;
+        }
+
+        .tui-viewport {
+            display: grid;
+            grid-template-columns: 1.2fr 1.1fr;
+            gap: 12px;
+            height: 250px;
+        }
+
+        .tui-box {
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-deck);
+            position: relative;
+        }
+
+        .tui-box-label {
+            position: absolute;
+            top: -9px;
+            left: 10px;
+            background: var(--bg-deck);
+            padding: 0 4px;
+            font-weight: bold;
+            font-size: 0.7rem;
+        }
+
+        .tui-lib-wrapper {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .tui-lib-item {
+            padding: 3px 5px;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .tui-lib-item.selected {
+            background-color: var(--bg-module);
+            color: var(--tui-yellow);
+            font-weight: bold;
+        }
+
+        .tui-lib-item.playing::before {
+            content: "▶ ";
+            color: var(--tui-green);
+        }
+
+        .tui-lib-item.selected::before {
+            content: "» ";
+            color: var(--tui-yellow);
+        }
+
+        .tui-bar-element {
+            background: var(--bg-module);
+            height: 16px;
+            position: relative;
+            margin-top: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+            border: 1px solid var(--border-dim);
+        }
+
+        .tui-bar-fill {
+            background: var(--tui-green);
+            height: 100%;
+            width: 0%;
+        }
+
+        .tui-bar-label {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 0.7rem;
+            color: var(--text-bright);
+            mix-blend-mode: difference;
+        }
+
+        .tui-overlay-menu {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            right: 8px;
+            bottom: 8px;
+            background: var(--bg-deck);
+            border: 1px solid var(--tui-purple);
+            border-radius: 4px;
+            padding: 16px;
+            z-index: 5;
+            overflow-y: auto;
+            display: none;
+        }
+
+        .tui-overlay-menu.active {
+            display: block;
+        }
+
+        .tui-menu-grid {
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 4px 10px;
+            font-size: 0.7rem;
+            margin-top: 10px;
+        }
+
+        .tui-menu-key {
+            color: var(--tui-purple);
+            font-weight: bold;
+        }
+
+        /* --- Deploy Section --- */
+        .deploy-section {
+            background-color: var(--bg-deck);
+            border: 1px solid var(--border-dim);
+            border-radius: 6px;
+            padding: 24px;
+            margin-bottom: 60px;
+        }
+
+        .tabs-header {
+            display: flex;
+            gap: 4px;
+            border-bottom: 1px solid var(--border-dim);
+            margin-bottom: 16px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-dark);
+            padding: 8px 14px;
+            cursor: pointer;
+            font-family: inherit;
+            font-size: 0.75rem;
+            border-bottom: 2px solid transparent;
+            transition: all 0.2s ease;
+        }
+
+        .tab-btn.active {
+            color: var(--tui-yellow);
+            border-bottom-color: var(--tui-yellow);
+            font-weight: bold;
+        }
+
+        .cmd-panel {
+            background-color: var(--bg-module);
+            border: 1px solid var(--border-dim);
+            border-radius: 4px;
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cmd-code {
+            color: var(--text-bright);
+            font-size: 0.75rem;
+            white-space: nowrap;
+            overflow-x: auto;
+            margin-right: 12px;
+            scrollbar-width: none;
+        }
+
+        .cmd-copy {
+            background-color: transparent;
+            border: 1px solid var(--border-dim);
+            color: var(--text-raw);
+            font-family: inherit;
+            font-size: 0.7rem;
+            padding: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .cmd-copy:hover {
+            border-color: var(--tui-yellow);
+            color: var(--tui-yellow);
+        }
+
+        .cmd-copy.copied {
+            border-color: var(--tui-green);
+            color: var(--tui-green);
+        }
+
+        /* --- Footer --- */
+        footer {
+            border-top: 1px solid var(--border-dim);
+            padding-top: 30px;
+            text-align: center;
+            font-size: 0.75rem;
+        }
+
+        .footer-flow {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .signature {
+            color: var(--text-raw);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .footer-divider {
+            color: var(--text-dark);
+            user-select: none;
+        }
+
+        .minimal-heart {
+            font-size: 0.85rem;
+            animation: color-fill 4s infinite ease-in-out;
+            display: inline-block;
+        }
+
+        .footer-socials {
+            display: flex;
+            gap: 12px;
+        }
+
+        .social-link {
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .social-link:hover {
+            color: var(--tui-blue);
+        }
+
+        .social-link svg {
+            width: 14px;
+            height: 14px;
+            fill: currentColor;
+        }
+
+        @keyframes color-fill {
+            0%, 100% { color: #ffffff; }
+            50% { color: #800000; } /* Maroon */
+        }
