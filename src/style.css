@@ -364,6 +364,34 @@
             color: var(--tui-green);
         }
 
+        .cmd-panel.flex-col {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .cmd-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+        }
+
+        .install-note {
+            font-size: 0.7rem;
+            color: var(--tui-yellow);
+            margin-bottom: 8px;
+        }
+
+        .install-note a {
+            color: var(--tui-blue);
+            text-decoration: none;
+        }
+
+        .install-note a:hover {
+            text-decoration: underline;
+        }
+
         /* --- Footer --- */
         footer {
             border-top: 1px solid var(--border-dim);

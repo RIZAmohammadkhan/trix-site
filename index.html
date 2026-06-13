@@ -131,14 +131,20 @@
                 <button class="cmd-copy" onclick="copyCommand('yay -S trix-player', this)">Copy</button>
             </div>
 
-            <div id="tab-deb" class="cmd-panel" style="display: none;">
-                <code class="cmd-code">sudo dpkg -i trix-player_*.deb</code>
-                <button class="cmd-copy" onclick="copyCommand('sudo dpkg -i trix-player_*.deb', this)">Copy</button>
+            <div id="tab-deb" class="cmd-panel flex-col" style="display: none;">
+                <p class="install-note">⚠ Download the .deb package from <a href="https://github.com/RIZAmohammadkhan/TerminalMusicPlayer/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a> first.</p>
+                <div class="cmd-row">
+                    <code class="cmd-code">sudo dpkg -i trix-player_*.deb</code>
+                    <button class="cmd-copy" onclick="copyCommand('sudo dpkg -i trix-player_*.deb', this)">Copy</button>
+                </div>
             </div>
 
-            <div id="tab-rpm" class="cmd-panel" style="display: none;">
-                <code class="cmd-code">sudo rpm -i trix-player-*.rpm</code>
-                <button class="cmd-copy" onclick="copyCommand('sudo rpm -i trix-player-*.rpm', this)">Copy</button>
+            <div id="tab-rpm" class="cmd-panel flex-col" style="display: none;">
+                <p class="install-note">⚠ Download the .rpm package from <a href="https://github.com/RIZAmohammadkhan/TerminalMusicPlayer/releases" target="_blank" rel="noopener noreferrer">GitHub Releases</a> first.</p>
+                <div class="cmd-row">
+                    <code class="cmd-code">sudo rpm -i trix-player-*.rpm</code>
+                    <button class="cmd-copy" onclick="copyCommand('sudo rpm -i trix-player-*.rpm', this)">Copy</button>
+                </div>
             </div>
         </section>
 
